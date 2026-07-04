@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Wedding Vote</title>
+  <script type="module" src="./js/app.js"></script>
+  <style>
+    body { font-family: Arial; text-align: center; background:#fafafa; }
+    input { padding:10px; font-size:16px; }
+    button { padding:10px 20px; margin-top:10px; }
+    #users { margin-top:20px; height:200px; overflow:hidden; }
+    .user { animation: scrollUp 10s linear infinite; }
+    @keyframes scrollUp {
+      0% { transform: translateY(100%); }
+      100% { transform: translateY(-100%); }
+    }
+  </style>
+</head>
+<body>
+
+<h1>Wedding Voting</h1>
+
+<p>QR-Code / Link hier teilen</p>
+
+<input id="name" placeholder="Dein Name">
+<br>
+<button id="join">Beitreten</button>
+
+<h3>Teilnehmer</h3>
+<div id="users"></div>
+
+</body>
+</html>
