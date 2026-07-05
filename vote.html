@@ -1,34 +1,47 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Vote</title>
-  <script type="module" src="./js/vote.js"></script>
-  <style>
-    body { font-family: Arial; text-align:center; margin:0; padding:24px; background:#fafafa; }
-    .card { max-width:680px; margin:0 auto; background:#fff; border-radius:12px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
-    input { padding:10px; font-size:16px; }
-    button { font-size:20px; padding:20px; margin:10px; cursor:pointer; }
-    #status { color:#555; margin-top:8px; min-height:20px; }
-    #meta { color:#777; margin-top:6px; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+  <title>Abstimmen – Hochzeitsquiz Lara &amp; Nathanael</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <div class="vote-page">
+    <header class="vote-header">
+      <div class="ring-signature ring-signature--sm">
+        <span class="ring ring--left"></span>
+        <span class="ring ring--right"></span>
+      </div>
+      <p class="participant-name">Angemeldet als <strong id="participant-name"></strong></p>
+    </header>
 
-<div class="card">
-  <h1>Abstimmung</h1>
+    <section id="waiting-view" class="vote-waiting">
+      <div class="ring-signature">
+        <span class="ring ring--left"></span>
+        <span class="ring ring--right"></span>
+      </div>
+      <p id="waiting-text">Bitte warte auf den Moderator …</p>
+    </section>
 
-  <input id="username" placeholder="Dein Benutzername">
-  <button id="saveName">Namen speichern</button>
+    <div id="question-wrap" class="vote-question-wrap" style="display:none;">
+      <p id="question-text" class="vote-question"></p>
+    </div>
 
-  <h2 id="q"></h2>
-  <div id="meta"></div>
+    <div id="buttons-wrap" class="vote-buttons" style="display:none;">
+      <button id="btn-a" class="vote-btn vote-btn--a" type="button">
+        <span class="vote-btn-label"></span>
+        <span class="vote-btn-sub">antippen zum Abstimmen</span>
+      </button>
+      <button id="btn-b" class="vote-btn vote-btn--b" type="button">
+        <span class="vote-btn-label"></span>
+        <span class="vote-btn-sub">antippen zum Abstimmen</span>
+      </button>
+    </div>
 
-  <button id="a">Lara</button>
-  <button id="b">Nathanael</button>
+    <p id="confirmation" class="vote-confirmation" style="display:none;"></p>
+  </div>
 
-  <div id="status"></div>
-</div>
-
+  <script type="module" src="js/vote.js"></script>
 </body>
 </html>

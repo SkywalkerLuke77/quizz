@@ -1,182 +1,174 @@
+/**
+ * vote.js
+ * ---------------------------------------------------------------------------
+ * Logik für vote.html (Smartphone-Ansicht der Teilnehmer).
+ *
+ * Ablauf:
+ *  1. Session & Teilnehmer-Identität laden.
+ *  2. Live auf die Session hören (Status + aktuelle Frage).
+ *  3. Bei Statuswechsel zu "voting_open" die passende Frage aus questions.js
+ *     anzeigen und prüfen, ob für diese Frage schon abgestimmt wurde
+ *     (localStorage als schnelle Prüfung + Firestore als verbindliche Quelle).
+ *  4. Beim Klick auf einen Button: Stimme per Transaction abgeben. Danach
+ *     werden beide Buttons deaktiviert, auch nach einem Reload.
+ * ---------------------------------------------------------------------------
+ */
+
+import { ensureSessionExists, watchSession, castVote, hasVoted } from './firestore.js';
+import { questions, ANSWER_A_LABEL, ANSWER_B_LABEL } from './questions.js';
 import {
-  db, collection, doc, setDoc, getDoc, onSnapshot
-} from "./firebase.js";
+  getSessionId,
+  getOrCreateParticipantId,
+  getStoredParticipantName,
+  hasVotedLocally,
+  markVotedLocally,
+} from './utils.js';
 
-import {
-  ensureQuestionsSeeded,
-  subscribeQuestions
-} from "./question-store.js";
+const sessionId = getSessionId();
+const participantId = getOrCreateParticipantId(sessionId);
+const participantName = getStoredParticipantName(sessionId);
 
-const sessionRef = doc(db, "session", "main");
-
-const usernameInput = document.getElementById("username");
-const saveNameBtn = document.getElementById("saveName");
-const questionEl = document.getElementById("q");
-const metaEl = document.getElementById("meta");
-const statusEl = document.getElementById("status");
-const btnA = document.getElementById("a");
-const btnB = document.getElementById("b");
-
-let sessionState = null;
-let currentQuestion = 0;
-let currentQuestions = [];
-
-function voteDocRef(index, username) {
-  return doc(db, "session", "main", "votes", `q${index}`, "entries", username);
-}
-
-function clampQuestionIndex(index) {
-  if (!currentQuestions.length) return 0;
-  if (!Number.isInteger(index) || index < 0) return 0;
-  if (index >= currentQuestions.length) return 0;
-  return index;
-}
-
-function getUsername() {
-  return usernameInput.value.trim();
-}
-
-function setVotingEnabled(enabled) {
-  btnA.disabled = !enabled;
-  btnB.disabled = !enabled;
-}
-
-function renderQuestion() {
-  if (!currentQuestions.length) {
-    questionEl.innerText = "Keine Fragen vorhanden. Bitte Admin informieren.";
-    return;
-  }
-
-  const safe = clampQuestionIndex(currentQuestion);
-  questionEl.innerText = `Frage ${safe + 1}/${currentQuestions.length}: ${currentQuestions[safe].text}`;
-}
-
-function renderMeta() {
-  if (!sessionState) return;
-
-  const open = Boolean(sessionState.questionOpen);
-  const endsAt = Number(sessionState.questionEndsAt || 0);
-  const remaining = Math.max(0, Math.ceil((endsAt - Date.now()) / 1000));
-
-  if (open) {
-    metaEl.innerText = `Abstimmung offen | Restzeit: ${remaining}s`;
-    return;
-  }
-
-  metaEl.innerText = "Abstimmung geschlossen";
-}
-
-async function refreshLocalVoteStatus() {
-  if (!currentQuestions.length) {
-    statusEl.innerText = "Es sind noch keine Fragen angelegt.";
-    setVotingEnabled(false);
-    return;
-  }
-
-  const username = getUsername();
-  if (!username) {
-    statusEl.innerText = "Bitte Benutzernamen eingeben.";
-    setVotingEnabled(false);
-    return;
-  }
-
-  if (!sessionState || !sessionState.questionOpen) {
-    setVotingEnabled(false);
-    return;
-  }
-
-  const voteSnap = await getDoc(voteDocRef(currentQuestion, username));
-  if (voteSnap.exists()) {
-    statusEl.innerText = "Du hast bereits abgestimmt.";
-    setVotingEnabled(false);
-    return;
-  }
-
-  statusEl.innerText = "Bitte stimme jetzt ab.";
-  setVotingEnabled(true);
-}
-
-saveNameBtn.onclick = () => {
-  const username = getUsername();
-  if (!username) {
-    statusEl.innerText = "Benutzername fehlt.";
-    return;
-  }
-
-  localStorage.setItem("quiz_username", username);
-  statusEl.innerText = "Name gespeichert.";
-  refreshLocalVoteStatus();
+const els = {
+  participantName: document.getElementById('participant-name'),
+  questionWrap: document.getElementById('question-wrap'),
+  questionText: document.getElementById('question-text'),
+  buttonsWrap: document.getElementById('buttons-wrap'),
+  btnA: document.getElementById('btn-a'),
+  btnB: document.getElementById('btn-b'),
+  waiting: document.getElementById('waiting-view'),
+  waitingText: document.getElementById('waiting-text'),
+  confirmation: document.getElementById('confirmation'),
 };
 
-async function vote(choice) {
-  if (!currentQuestions.length) {
-    statusEl.innerText = "Es sind noch keine Fragen angelegt.";
-    setVotingEnabled(false);
-    return;
-  }
-
-  const username = getUsername();
-  if (!username) {
-    statusEl.innerText = "Bitte Benutzernamen eingeben.";
-    return;
-  }
-
-  if (!sessionState || !sessionState.questionOpen) {
-    statusEl.innerText = "Diese Frage ist geschlossen.";
-    setVotingEnabled(false);
-    return;
-  }
-
-  const ref = voteDocRef(currentQuestion, username);
-  const existing = await getDoc(ref);
-  if (existing.exists()) {
-    statusEl.innerText = "Du hast bereits abgestimmt.";
-    setVotingEnabled(false);
-    return;
-  }
-
-  await setDoc(ref, {
-    username,
-    choice,
-    createdAt: Date.now()
-  });
-
-  statusEl.innerText = `Stimme gespeichert: ${choice}`;
-  setVotingEnabled(false);
-}
-
-btnA.onclick = () => vote("Lara");
-btnB.onclick = () => vote("Nathanael");
-
-async function init() {
-  await ensureQuestionsSeeded();
-
-  const saved = localStorage.getItem("quiz_username") || "";
-  usernameInput.value = saved;
-
-  subscribeQuestions((questions) => {
-    currentQuestions = questions;
-    renderQuestion();
-  });
-
-  onSnapshot(sessionRef, async (snap) => {
-    if (!snap.exists()) return;
-
-    sessionState = snap.data();
-    currentQuestion = clampQuestionIndex(sessionState.currentQuestion || 0);
-
-    renderQuestion();
-    renderMeta();
-    await refreshLocalVoteStatus();
-  });
-
-  setInterval(() => {
-    renderMeta();
-  }, 1000);
-
-  onSnapshot(collection(db, "session", "main", "users"), async () => {
-    await refreshLocalVoteStatus();
-  });
-}
+let currentQuestionIndex = null;
+let currentStatus = null;
+let voteInFlight = false;
 
 init();
+
+async function init() {
+  if (!participantName) {
+    // Ohne Registrierung kein Zugriff auf die Voting-Seite.
+    window.location.href = `login.html?session=${encodeURIComponent(sessionId)}`;
+    return;
+  }
+
+  els.participantName.textContent = participantName;
+  els.btnA.querySelector('.vote-btn-label').textContent = ANSWER_A_LABEL;
+  els.btnB.querySelector('.vote-btn-label').textContent = ANSWER_B_LABEL;
+  els.btnA.addEventListener('click', () => handleVote('A'));
+  els.btnB.addEventListener('click', () => handleVote('B'));
+
+  await ensureSessionExists(sessionId);
+
+  watchSession(sessionId, onSessionUpdate);
+}
+
+async function onSessionUpdate(session) {
+  if (!session) return;
+  currentStatus = session.status;
+  const index = session.currentQuestionIndex ?? 0;
+
+  if (currentStatus === 'registration_open') {
+    showWaiting('Die Abstimmung hat noch nicht begonnen. Bitte warte auf den Moderator …');
+    return;
+  }
+
+  if (index !== currentQuestionIndex) {
+    currentQuestionIndex = index;
+    await renderQuestion(index);
+  }
+
+  if (currentStatus === 'voting_open') {
+    setButtonsMode('active');
+  } else if (currentStatus === 'voting_closed' || currentStatus === 'results_visible') {
+    setButtonsMode('closed');
+  }
+}
+
+async function renderQuestion(index) {
+  const q = questions[index];
+  if (!q) {
+    showWaiting('Das Quiz ist beendet. Vielen Dank fürs Mitspielen! 💕');
+    return;
+  }
+
+  els.waiting.style.display = 'none';
+  els.questionWrap.style.display = 'block';
+  els.buttonsWrap.style.display = 'flex';
+  els.confirmation.style.display = 'none';
+  els.questionText.textContent = q.frage;
+
+  els.btnA.disabled = false;
+  els.btnB.disabled = false;
+  els.btnA.classList.remove('is-selected');
+  els.btnB.classList.remove('is-selected');
+
+  // Prüfen, ob für diese Frage bereits abgestimmt wurde (lokal + Firestore).
+  let existingAnswer = null;
+  if (hasVotedLocally(sessionId, index)) {
+    existingAnswer = await hasVoted(sessionId, index, participantId);
+  } else {
+    existingAnswer = await hasVoted(sessionId, index, participantId);
+  }
+
+  if (existingAnswer) {
+    markVotedLocally(sessionId, index);
+    lockButtonsAfterVote(existingAnswer);
+  }
+}
+
+function showWaiting(text) {
+  els.waiting.style.display = 'flex';
+  els.questionWrap.style.display = 'none';
+  els.buttonsWrap.style.display = 'none';
+  els.confirmation.style.display = 'none';
+  els.waitingText.textContent = text;
+}
+
+function setButtonsMode(mode) {
+  if (currentQuestionIndex === null) return;
+  const alreadyVoted = hasVotedLocally(sessionId, currentQuestionIndex);
+  if (mode === 'closed' && !alreadyVoted) {
+    els.btnA.disabled = true;
+    els.btnB.disabled = true;
+  }
+}
+
+async function handleVote(answer) {
+  if (voteInFlight) return;
+  if (currentQuestionIndex === null) return;
+  if (currentStatus !== 'voting_open') return;
+  if (hasVotedLocally(sessionId, currentQuestionIndex)) return;
+
+  voteInFlight = true;
+  els.btnA.disabled = true;
+  els.btnB.disabled = true;
+
+  try {
+    await castVote(sessionId, currentQuestionIndex, participantId, answer);
+    markVotedLocally(sessionId, currentQuestionIndex);
+    lockButtonsAfterVote(answer);
+  } catch (err) {
+    if (err.code === 'ALREADY_VOTED') {
+      markVotedLocally(sessionId, currentQuestionIndex);
+      lockButtonsAfterVote(answer);
+    } else {
+      console.error(err);
+      els.btnA.disabled = (currentStatus !== 'voting_open');
+      els.btnB.disabled = (currentStatus !== 'voting_open');
+      alert('Deine Stimme konnte nicht gespeichert werden. Bitte versuche es erneut.');
+    }
+  } finally {
+    voteInFlight = false;
+  }
+}
+
+function lockButtonsAfterVote(answer) {
+  els.btnA.disabled = true;
+  els.btnB.disabled = true;
+  if (answer === 'A') els.btnA.classList.add('is-selected');
+  if (answer === 'B') els.btnB.classList.add('is-selected');
+  els.confirmation.style.display = 'block';
+  els.confirmation.textContent = 'Deine Stimme wurde gespeichert. ✓';
+}

@@ -1,40 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Host</title>
-  <script type="module" src="./js/host.js"></script>
-  <style>
-    body { font-family: Arial; text-align:center; margin:0; padding:24px; background:#f6f7fb; }
-    .card { max-width:760px; margin:0 auto; background:#fff; border-radius:12px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
-    button { padding:10px; margin:5px; cursor:pointer; }
-    .barRow { margin:10px 0; text-align:left; }
-    .barBg { height:30px; background:#eef0f4; border-radius:6px; overflow:hidden; }
-    .barFill { height:100%; color:#fff; display:flex; align-items:center; padding-left:10px; font-weight:bold; min-width:40px; }
-    #meta, #roundStatus { color:#555; margin:8px 0; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Moderator – Hochzeitsquiz Lara &amp; Nathanael</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <main class="host-page">
+    <header class="host-header">
+      <div class="ring-signature ring-signature--sm">
+        <span class="ring ring--left"></span>
+        <span class="ring ring--right"></span>
+      </div>
+      <div>
+        <h1>Moderator-Steuerung</h1>
+        <p class="log-line">Session: <strong id="session-label"></strong></p>
+      </div>
+    </header>
 
-<div class="card">
-  <h1>Moderator</h1>
+    <div class="host-grid">
+      <div class="stat-card">
+        <p class="stat-label">Status</p>
+        <p class="stat-value"><span id="status-pill" class="status-pill">–</span></p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Teilnehmer</p>
+        <p class="stat-value" id="participant-count-value">0</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-label">Abgegebene Stimmen (aktuelle Frage)</p>
+        <p class="stat-value" id="vote-count-value">0</p>
+      </div>
+    </div>
 
-  <div>
-    <p><a href="./admin.html">Admin: Fragen bearbeiten</a></p>
-    <button id="openJoin">Anmeldung öffnen (2 Min)</button>
-    <button id="closeJoin">Anmeldung schließen</button>
-  </div>
-  <div id="meta"></div>
+    <section class="host-section">
+      <h3>Aktuelle Frage</h3>
+      <div id="question-preview" class="host-question-preview">–</div>
+      <div class="host-btn-row">
+        <button id="btn-prev-question" class="btn btn-outline" type="button">← Vorherige Frage</button>
+        <button id="btn-next-question" class="btn btn-outline" type="button">Nächste Frage →</button>
+      </div>
+    </section>
 
-  <h2 id="question"></h2>
-  <div id="roundStatus"></div>
+    <section class="host-section">
+      <h3>Ablauf</h3>
+      <div class="host-btn-row">
+        <button id="btn-open-registration" class="btn btn-secondary" type="button">Anmeldung öffnen</button>
+        <button id="btn-close-registration" class="btn btn-outline" type="button">Anmeldung schließen</button>
+      </div>
+      <br />
+      <div class="host-btn-row">
+        <button id="btn-start-quiz" class="btn btn-primary" type="button">Umfrage starten</button>
+        <button id="btn-close-voting" class="btn btn-outline" type="button">Abstimmung schließen</button>
+        <button id="btn-show-results" class="btn btn-primary" type="button">Ergebnis anzeigen</button>
+      </div>
+    </section>
 
-  <button id="next">Nächste Frage starten</button>
-  <button id="closeQuestion">Frage schließen</button>
-  <button id="show">Ergebnis anzeigen</button>
+    <section class="host-section">
+      <h3>Zurücksetzen</h3>
+      <div class="host-btn-row">
+        <button id="btn-reset-participants" class="btn btn-danger" type="button">Teilnehmer zurücksetzen</button>
+        <button id="btn-reset-votes" class="btn btn-danger" type="button">Stimmen zurücksetzen</button>
+        <button id="btn-reset-session" class="btn btn-danger" type="button">Komplette Session zurücksetzen</button>
+      </div>
+    </section>
 
-  <div id="results"></div>
-</div>
+    <p id="log-line" class="log-line"></p>
+  </main>
 
+  <script type="module" src="js/host.js"></script>
 </body>
 </html>

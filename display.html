@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hochzeitsquiz Lara &amp; Nathanael – Anzeige</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <!-- QR-Code-Bibliothek (reines Vanilla-JS, UMD-Build über CDN, kein Bundler nötig) -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="display-page">
+    <div class="display-topbar">
+      <div class="ring-signature">
+        <span class="ring ring--left"></span>
+        <span class="ring ring--right"></span>
+      </div>
+      <h1>Lara &amp; Nathanael</h1>
+    </div>
+
+    <!-- Startbildschirm: QR-Code links, Teilnehmerliste rechts -->
+    <section id="view-start" class="display-view is-active">
+      <div class="start-panel start-panel--left">
+        <div id="qr-canvas-wrap"></div>
+        <p id="start-url" class="start-url"></p>
+        <p class="start-hint">Scanne den QR-Code und mach mit!</p>
+      </div>
+      <div class="start-panel participant-panel">
+        <h2>Wer ist schon dabei?</h2>
+        <p id="participant-count" class="participant-count">0 Teilnehmer angemeldet</p>
+        <div class="participant-scroll-viewport">
+          <div id="participant-track" class="participant-scroll-track"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Frage-Ansicht -->
+    <section id="view-question" class="display-view">
+      <p id="question-eyebrow" class="question-eyebrow"></p>
+      <h2 id="question-text" class="question-text"></h2>
+      <div id="question-image-wrap" class="question-image-wrap"></div>
+    </section>
+
+    <!-- Ergebnis-Ansicht -->
+    <section id="view-results" class="display-view">
+      <h2 id="results-question" class="results-question"></h2>
+      <div class="results-bars">
+        <div class="result-column">
+          <div id="bar-a" class="result-bar result-bar--a">
+            <span id="percent-a" class="result-percent"></span>
+          </div>
+          <p class="result-label result-label-a"></p>
+          <p id="count-a" class="result-count"></p>
+        </div>
+        <div class="result-column">
+          <div id="bar-b" class="result-bar result-bar--b">
+            <span id="percent-b" class="result-percent"></span>
+          </div>
+          <p class="result-label result-label-b"></p>
+          <p id="count-b" class="result-count"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="js/display.js"></script>
+</body>
+</html>
