@@ -18,13 +18,16 @@ import {
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 // TODO: Ersetze diese Platzhalter durch deine echte Firebase-Konfiguration.
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
 const firebaseConfig = {
-  apiKey: 'DEIN_API_KEY',
-  authDomain: 'DEIN_PROJEKT.firebaseapp.com',
-  projectId: 'DEIN_PROJEKT_ID',
-  storageBucket: 'DEIN_PROJEKT.appspot.com',
-  messagingSenderId: 'DEINE_SENDER_ID',
-  appId: 'DEINE_APP_ID',
+  apiKey: "AIzaSyCU8rdfwinf5ELa8OmhquVD0gGhB8b3kOM",
+  authDomain: "lnquizz.firebaseapp.com",
+  projectId: "lnquizz",
+  storageBucket: "lnquizz.firebasestorage.app",
+  messagingSenderId: "232438389870",
+  appId: "1:232438389870:web:58f57fec98b1cc9d78da7f",
+  measurementId: "G-GVCCRRHK9F"
 };
 
 const app = initializeApp(firebaseConfig);

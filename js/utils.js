@@ -111,6 +111,25 @@ export function markVotedLocally(sessionId, questionIndex) {
   localStorage.setItem('hq_votedQuestions_' + sessionId, JSON.stringify(arr));
 }
 
+/**
+ * Entfernt einen einzelnen Fragen-Index aus dem lokalen "abgestimmt"-Merker.
+ * Wird benötigt, um veraltete Einträge zu korrigieren - z. B. wenn der
+ * Moderator die komplette Session zurückgesetzt hat: Die Stimme in
+ * Firestore ist dann gelöscht, aber der lokale Merker auf dem Handy bliebe
+ * ohne diese Funktion fälschlich auf "schon abgestimmt" stehen und würde
+ * jeden weiteren Klick auf die Antwort-Buttons stillschweigend blockieren.
+ */
+export function unmarkVotedLocally(sessionId, questionIndex) {
+  const raw = localStorage.getItem('hq_votedQuestions_' + sessionId);
+  if (!raw) return;
+  try {
+    const arr = JSON.parse(raw).filter((i) => i !== questionIndex);
+    localStorage.setItem('hq_votedQuestions_' + sessionId, JSON.stringify(arr));
+  } catch {
+    localStorage.removeItem('hq_votedQuestions_' + sessionId);
+  }
+}
+
 export function clearVotedLocally(sessionId) {
   localStorage.removeItem('hq_votedQuestions_' + sessionId);
 }

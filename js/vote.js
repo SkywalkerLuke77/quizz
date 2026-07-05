@@ -22,6 +22,7 @@ import {
   getStoredParticipantName,
   hasVotedLocally,
   markVotedLocally,
+  unmarkVotedLocally,
 } from './utils.js';
 
 const sessionId = getSessionId();
@@ -70,7 +71,15 @@ async function onSessionUpdate(session) {
   const index = session.currentQuestionIndex ?? 0;
 
   if (currentStatus === 'registration_open') {
-    showWaiting('Die Abstimmung hat noch nicht begonnen. Bitte warte auf den Moderator …');
+    // Dieser Fall tritt vor allem nach einem "Komplette Session
+    // zurücksetzen" ein: Der Teilnehmer-Eintrag in Firestore wurde
+    // gelöscht, das Handy selbst weiß das aber nicht (der Name steht noch
+    // im localStorage). Ohne diese Weiterleitung würde das Gerät hier
+    // endlos auf eine Umfrage warten, obwohl es in Firestore gar nicht
+    // mehr als Teilnehmer existiert. Zurück zur Anmeldung schicken - der
+    // Name ist dort bereits vorausgefüllt, ein Tippen auf "Anmelden"
+    // genügt.
+    window.location.href = `login.html?session=${encodeURIComponent(sessionId)}`;
     return;
   }
 
@@ -104,17 +113,19 @@ async function renderQuestion(index) {
   els.btnA.classList.remove('is-selected');
   els.btnB.classList.remove('is-selected');
 
-  // Prüfen, ob für diese Frage bereits abgestimmt wurde (lokal + Firestore).
-  let existingAnswer = null;
-  if (hasVotedLocally(sessionId, index)) {
-    existingAnswer = await hasVoted(sessionId, index, participantId);
-  } else {
-    existingAnswer = await hasVoted(sessionId, index, participantId);
-  }
+  // Firestore ist die einzige verbindliche Quelle dafür, ob bereits
+  // abgestimmt wurde. Der lokale Merker (localStorage) dient nur als
+  // schnelle UI-Abkürzung und wird hier bei jeder Frage mit Firestore
+  // abgeglichen - so kann ein veralteter lokaler Merker (z. B. von vor
+  // einem "Komplette Session zurücksetzen") niemals dauerhaft verhindern,
+  // dass jemand abstimmt.
+  const existingAnswer = await hasVoted(sessionId, index, participantId);
 
   if (existingAnswer) {
     markVotedLocally(sessionId, index);
     lockButtonsAfterVote(existingAnswer);
+  } else {
+    unmarkVotedLocally(sessionId, index);
   }
 }
 
