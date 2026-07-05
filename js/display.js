@@ -205,8 +205,9 @@ function showResults(index) {
 
     // Minimalhöhe von 4%, damit auch 0-Stimmen-Balken sichtbar bleiben.
     requestAnimationFrame(() => {
-      el.barA.style.height = Math.max(pctA, 4) + '%';
-      el.barB.style.height = Math.max(pctB, 4) + '%';
+      el.barA.style.height = Math.max(pctA, 10) + '%';
+      el.barB.style.height = Math.max(pctB, 10) + '%';
+      console.log(`[display.js] Höhe Balken A ${pctA}, B ${pctB}`);
     });
 
     el.percentA.textContent = formatPercent(countA, total);
