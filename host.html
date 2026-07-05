@@ -5,21 +5,36 @@
   <title>Host</title>
   <script type="module" src="./js/host.js"></script>
   <style>
-    body { font-family: Arial; text-align:center; }
-    button { padding:10px; margin:5px; }
-    .bar { height:30px; margin:10px; }
+    body { font-family: Arial; text-align:center; margin:0; padding:24px; background:#f6f7fb; }
+    .card { max-width:760px; margin:0 auto; background:#fff; border-radius:12px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+    button { padding:10px; margin:5px; cursor:pointer; }
+    .barRow { margin:10px 0; text-align:left; }
+    .barBg { height:30px; background:#eef0f4; border-radius:6px; overflow:hidden; }
+    .barFill { height:100%; color:#fff; display:flex; align-items:center; padding-left:10px; font-weight:bold; min-width:40px; }
+    #meta, #roundStatus { color:#555; margin:8px 0; }
   </style>
 </head>
 <body>
 
-<h1>Moderator</h1>
+<div class="card">
+  <h1>Moderator</h1>
 
-<h2 id="question"></h2>
+  <div>
+    <p><a href="./admin.html">Admin: Fragen bearbeiten</a></p>
+    <button id="openJoin">Anmeldung öffnen (2 Min)</button>
+    <button id="closeJoin">Anmeldung schließen</button>
+  </div>
+  <div id="meta"></div>
 
-<button id="next">Nächste Frage</button>
-<button id="show">Ergebnis anzeigen</button>
+  <h2 id="question"></h2>
+  <div id="roundStatus"></div>
 
-<div id="results"></div>
+  <button id="next">Nächste Frage starten</button>
+  <button id="closeQuestion">Frage schließen</button>
+  <button id="show">Ergebnis anzeigen</button>
+
+  <div id="results"></div>
+</div>
 
 </body>
 </html>

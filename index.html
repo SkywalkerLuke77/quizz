@@ -5,29 +5,47 @@
   <title>Wedding Vote</title>
   <script type="module" src="./js/app.js"></script>
   <style>
-    body { font-family: Arial; text-align: center; background:#fafafa; }
+    body { font-family: Arial; text-align: center; background:#fafafa; margin:0; padding:24px; }
+    .card { max-width:640px; margin:0 auto; background:#fff; border-radius:12px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+    .linkRow { display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin:14px 0; }
     input { padding:10px; font-size:16px; }
-    button { padding:10px 20px; margin-top:10px; }
-    #users { margin-top:20px; height:200px; overflow:hidden; }
-    .user { animation: scrollUp 10s linear infinite; }
+    button { padding:10px 20px; margin-top:10px; cursor:pointer; }
+    #joinStatus { margin-top:8px; color:#555; }
+    #usersWrap { margin-top:20px; height:200px; overflow:hidden; border:1px solid #ddd; border-radius:8px; background:#fff; }
+    #usersScroller { display:flex; flex-direction:column; }
+    .scrolling { animation: scrollUp 14s linear infinite; }
+    .user { padding:8px 10px; border-bottom:1px solid #f1f1f1; }
+    #qr { margin-top:8px; border:1px solid #ddd; border-radius:8px; }
     @keyframes scrollUp {
-      0% { transform: translateY(100%); }
-      100% { transform: translateY(-100%); }
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-50%); }
     }
   </style>
 </head>
 <body>
 
-<h1>Wedding Voting</h1>
+<div class="card">
+  <h1>Wedding Voting</h1>
+  
 
-<p>QR-Code / Link hier teilen</p>
+  <p>Teilnehmer-Link</p>
+  <div class="linkRow">
+    <input id="voteLink" readonly>
+    <button id="copyLink">Link kopieren</button>
+  </div>
+  <img id="qr" alt="QR Code fuer Teilnehmer" width="180" height="180">
 
-<input id="name" placeholder="Dein Name">
-<br>
-<button id="join">Beitreten</button>
+  <h3>Anmeldung</h3>
+  <input id="name" placeholder="Dein Name">
+  <br>
+  <button id="join">Beitreten</button>
+  <div id="joinStatus"></div>
 
-<h3>Teilnehmer</h3>
-<div id="users"></div>
+  <h3>Angemeldete Teilnehmer</h3>
+  <div id="usersWrap">
+    <div id="usersScroller"></div>
+  </div>
+</div>
 
 </body>
 </html>

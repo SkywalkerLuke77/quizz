@@ -5,15 +5,30 @@
   <title>Vote</title>
   <script type="module" src="./js/vote.js"></script>
   <style>
-    button { font-size:20px; padding:20px; margin:10px; }
+    body { font-family: Arial; text-align:center; margin:0; padding:24px; background:#fafafa; }
+    .card { max-width:680px; margin:0 auto; background:#fff; border-radius:12px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.08); }
+    input { padding:10px; font-size:16px; }
+    button { font-size:20px; padding:20px; margin:10px; cursor:pointer; }
+    #status { color:#555; margin-top:8px; min-height:20px; }
+    #meta { color:#777; margin-top:6px; }
   </style>
 </head>
 <body>
 
-<h2 id="q"></h2>
+<div class="card">
+  <h1>Abstimmung</h1>
 
-<button id="a">Lara 🩷</button>
-<button id="b">Nathanael 💙</button>
+  <input id="username" placeholder="Dein Benutzername">
+  <button id="saveName">Namen speichern</button>
+
+  <h2 id="q"></h2>
+  <div id="meta"></div>
+
+  <button id="a">Lara</button>
+  <button id="b">Nathanael</button>
+
+  <div id="status"></div>
+</div>
 
 </body>
 </html>
