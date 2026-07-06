@@ -94,15 +94,15 @@ function showView(name) {
 function renderQrCode(url) {
   const wrap = document.getElementById('qr-canvas-wrap');
   wrap.innerHTML = '';
-  const canvas = document.createElement('canvas');
-  wrap.appendChild(canvas);
-  if (window.QRCode && window.QRCode.toCanvas) {
-    window.QRCode.toCanvas(canvas, url, { width: 320, margin: 1 }, (err) => {
-      if (err) console.error('QR-Code Fehler:', err);
-    });
-  } else {
-    wrap.innerHTML = '<p style="padding:40px;max-width:240px;">QR-Bibliothek nicht geladen. Bitte URL manuell öffnen.</p>';
-  }
+
+  new QRCode(wrap, {
+    text: url,
+    width: 320,
+    height: 320,
+    colorDark: "#000000",
+    colorLight: "#ffffff",
+    correctLevel: QRCode.CorrectLevel.M
+  });
 }
 
 function onParticipantsUpdate(list) {
