@@ -20,51 +20,51 @@ export const ANSWER_B_LABEL = 'Nathanael';
 
 export const questions = [
   {
-    frage: 'Wer hat beim ersten Date mehr geredet?',
+    frage: 'Wer ist ordentlicher?',
     bild: 'assets/images/q01.jpg',
   },
   {
-    frage: 'Wer sagt öfter "Ich hab doch recht"?',
+    frage: 'Wer besitzt mehr Schuhe?',
     bild: 'assets/images/q02.jpg',
   },
   {
-    frage: 'Wer verschläft häufiger den Wecker?',
+    frage: 'Wer putzt gründlicher die Zähne?',
     bild: 'assets/images/q03.jpg',
   },
   {
-    frage: 'Wer kocht besser?',
+    frage: 'Wer hat mehr Follower auf Instagram?',
     bild: 'assets/images/q04.jpg',
   },
   {
-    frage: 'Wer braucht länger im Badezimmer?',
+    frage: 'Wer braucht länger unter der Dusche?',
     bild: 'assets/images/q05.jpg',
   },
   {
-    frage: 'Wer hat zuerst "Ich liebe dich" gesagt?',
+    frage: 'Wer hat immer recht?',
     bild: 'assets/images/q06.jpg',
   },
   {
-    frage: 'Wer ist der bessere Autofahrer?',
+    frage: 'Wer ist romantischer?',
     bild: 'assets/images/q07.jpg',
   },
   {
-    frage: 'Wer plant den Urlaub bis ins letzte Detail?',
+    frage: 'Wer ist vergesslicher?',
     bild: 'assets/images/q08.jpg',
   },
   {
-    frage: 'Wer isst öfter die Reste des anderen?',
+    frage: 'Wer schläft schneller ein?',
     bild: 'assets/images/q09.jpg',
   },
   {
-    frage: 'Wer verliert öfter den Haustürschlüssel?',
+    frage: 'Wer sagt öfter "Ich liebe dich"?',
     bild: 'assets/images/q10.jpg',
   },
   {
-    frage: 'Wer ist bei Streit zuerst wieder versöhnlich?',
+    frage: 'Wer möchte mehr Kinder?',
     bild: 'assets/images/q11.jpg',
   },
   {
-    frage: 'Wer schaut heimlich die nächste Folge ohne den anderen?',
+    frage: 'Wer übertreibt öfter?',
     bild: 'assets/images/q12.jpg',
   },
   {
