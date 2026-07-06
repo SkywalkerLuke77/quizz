@@ -165,6 +165,7 @@ function renderQuestionImage(src) {
     el.questionImageWrap.appendChild(buildPlaceholder());
   };
   el.questionImageWrap.appendChild(img);
+  console.log(`[display.js] Fragebild geladen: ${src}`);
 }
 
 function buildPlaceholder() {

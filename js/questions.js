@@ -68,19 +68,19 @@ export const questions = [
     bild: 'assets/images/q12.jpg',
   },
   {
-    frage: 'Wer gibt mehr Geld für Schuhe aus?',
+    frage: 'Wer ist schneller beleidigt?',
     bild: 'assets/images/q13.jpg',
   },
   {
-    frage: 'Wer wird an Weihnachten zuerst sentimental?',
+    frage: 'Wer merkt sich Geburtstage besser?',
     bild: 'assets/images/q14.jpg',
   },
   {
-    frage: 'Wer hat die Hochzeit spontaner geplant?',
+    frage: 'Wer würde sich eher ein Haustier anschaffen?',
     bild: 'assets/images/q15.jpg',
   },
   {
-    frage: 'Wer wird in 10 Jahren öfter Karaoke singen?',
+    frage: 'Wer wäre der strengere Elternteil?',
     bild: 'assets/images/q16.jpg',
   },
 ];

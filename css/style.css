@@ -476,7 +476,7 @@ a {
   max-width: 1400px;
 }
 .question-image-wrap {
-  width: 620px;
+  width: 60vw;
   max-width: 70vw;
   aspect-ratio: 16 / 10;
   border-radius: var(--radius-lg);
