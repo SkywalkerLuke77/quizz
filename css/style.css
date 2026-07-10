@@ -576,6 +576,12 @@ a {
 }
 
 /* Kontinuierliche, ruhige Hintergrund-Deko für den Beamer (dezente Blüten) */
+
+.display-page {
+    background:
+        url("../assets/images/background.png") center / 80% auto no-repeat;
+}
+
 .display-page::before,
 .display-page::after {
   content: '';
