@@ -630,6 +630,11 @@ a {
   padding: 20px 22px;
   box-shadow: var(--shadow-soft);
 }
+
+.stat-card.votes-complete {
+    background-color: rgb(173, 238, 173);
+}
+
 .stat-card .stat-label {
   font-size: 0.85rem;
   color: var(--color-ink-soft);

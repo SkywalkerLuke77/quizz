@@ -27,6 +27,7 @@ const sessionId = getSessionId();
 const el = {
   sessionLabel: document.getElementById('session-label'),
   statusPill: document.getElementById('status-pill'),
+  voteCard: document.getElementById('voteCard'),
   participantCount: document.getElementById('participant-count-value'),
   voteCount: document.getElementById('vote-count-value'),
   questionPreview: document.getElementById('question-preview'),
@@ -87,6 +88,11 @@ function updateVotesWatch(index) {
   if (votesUnsubscribe) votesUnsubscribe();
   votesUnsubscribe = watchVotesForQuestion(sessionId, index, ({ total }) => {
     el.voteCount.textContent = total;
+    if (total === parseInt(el.participantCount.textContent, 10) && total > 0) {
+      el.voteCard.classList.add('votes-complete');
+    } else {
+      el.voteCard.classList.remove('votes-complete');
+    }
   });
 }
 
