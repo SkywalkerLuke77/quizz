@@ -8,7 +8,7 @@
  * ---------------------------------------------------------------------------
  */
 
-import { ensureSessionExists, watchAllVotes } from './firestore.js';
+import { ensureSessionExists, watchAllVotes, watchParticipants, watchVotesForQuestionDetailed } from './firestore.js';
 import { questions, ANSWER_A_LABEL, ANSWER_B_LABEL } from './questions.js';
 import { getSessionId, formatPercent } from './utils.js';
 
@@ -22,17 +22,37 @@ const lightboxClose = document.getElementById('lightbox-close');
 const lightboxPrev = document.getElementById('lightbox-prev');
 const lightboxNext = document.getElementById('lightbox-next');
 
+const namesOverlay = document.getElementById('names-overlay');
+const namesOverlayClose = document.getElementById('names-overlay-close');
+const namesOverlayTitle = document.getElementById('names-overlay-title');
+const namesColATitle = document.getElementById('names-column-a-title');
+const namesColBTitle = document.getElementById('names-column-b-title');
+const namesListA = document.getElementById('names-list-a');
+const namesListB = document.getElementById('names-list-b');
+
 let lightboxIndex = 0;
+let participantsById = {};
+let namesVotesUnsubscribe = null;
 
 init();
 
 async function init() {
   if (sessionLabelEl) sessionLabelEl.textContent = sessionId;
 
+  const rankingLink = document.getElementById('link-to-ranking');
+  if (rankingLink) rankingLink.href = `ranking.html?session=${encodeURIComponent(sessionId)}`;
+
   buildSkeleton();
   bindLightbox();
+  bindNamesOverlay();
   await ensureSessionExists(sessionId);
   watchAllVotes(sessionId, onVotesUpdate);
+  watchParticipants(sessionId, (list) => {
+    participantsById = {};
+    list.forEach((p) => {
+      participantsById[p.id] = p.name;
+    });
+  });
 }
 
 /* --------------------------------- Lightbox --------------------------------- */
@@ -48,10 +68,13 @@ function bindLightbox() {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (lightbox.hidden) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowLeft') stepLightbox(-1);
-    if (e.key === 'ArrowRight') stepLightbox(1);
+    if (!lightbox.hidden) {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') stepLightbox(-1);
+      if (e.key === 'ArrowRight') stepLightbox(1);
+    } else if (!namesOverlay.hidden) {
+      if (e.key === 'Escape') closeNamesOverlay();
+    }
   });
 }
 
@@ -92,6 +115,66 @@ function renderLightboxImage() {
   lightboxImage.src = q.bild;
 }
 
+/* ------------------------------ Namens-Overlay ------------------------------ */
+
+function bindNamesOverlay() {
+  namesOverlayClose.addEventListener('click', closeNamesOverlay);
+  namesOverlay.addEventListener('click', (e) => {
+    if (e.target === namesOverlay) closeNamesOverlay();
+  });
+}
+
+function openNamesOverlay(index) {
+  const q = questions[index];
+  if (!q) return;
+
+  namesOverlayTitle.textContent = q.frage;
+  namesColATitle.textContent = ANSWER_A_LABEL;
+  namesColBTitle.textContent = ANSWER_B_LABEL;
+  namesOverlay.hidden = false;
+  document.body.style.overflow = 'hidden';
+
+  if (namesVotesUnsubscribe) namesVotesUnsubscribe();
+  namesVotesUnsubscribe = watchVotesForQuestionDetailed(sessionId, index, (votes) => {
+    const namesA = [];
+    const namesB = [];
+    votes.forEach((v) => {
+      const name = participantsById[v.participantId] || 'Unbekannter Teilnehmer';
+      if (v.answer === 'A') namesA.push(name);
+      else if (v.answer === 'B') namesB.push(name);
+    });
+    namesA.sort((a, b) => a.localeCompare(b, 'de'));
+    namesB.sort((a, b) => a.localeCompare(b, 'de'));
+    renderNamesList(namesListA, namesA);
+    renderNamesList(namesListB, namesB);
+  });
+}
+
+function closeNamesOverlay() {
+  namesOverlay.hidden = true;
+  document.body.style.overflow = '';
+  if (namesVotesUnsubscribe) {
+    namesVotesUnsubscribe();
+    namesVotesUnsubscribe = null;
+  }
+}
+
+function renderNamesList(ul, names) {
+  ul.innerHTML = '';
+  if (names.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'names-empty';
+    li.textContent = '– noch keine Stimmen –';
+    ul.appendChild(li);
+    return;
+  }
+  names.forEach((name) => {
+    const li = document.createElement('li');
+    li.textContent = name;
+    ul.appendChild(li);
+  });
+}
+
 /** Erzeugt für jede Frage einmalig den HTML-Block (Bild + leere Balken). */
 function buildSkeleton() {
   listEl.innerHTML = '';
@@ -115,6 +198,11 @@ function buildSkeleton() {
 
     listEl.appendChild(block);
     renderImage(index, q.bild);
+
+    block.querySelectorAll('.hbar-row').forEach((row) => {
+      row.classList.add('is-clickable');
+      row.addEventListener('click', () => openNamesOverlay(index));
+    });
   });
 }
 

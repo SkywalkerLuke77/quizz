@@ -226,6 +226,35 @@ export function watchVotesForQuestion(sessionId, questionIndex, callback) {
 }
 
 /**
+ * Live-Listener auf die rohen Stimmen (inkl. participantId) einer bestimmten
+ * Frage. Wird vom Namens-Overlay der Ergebnis-Übersicht genutzt, um beim
+ * Klick auf einen Balken anzuzeigen, welche Teilnehmer wie abgestimmt haben.
+ * (watchVotesForQuestion oben liefert nur aggregierte Zählwerte.)
+ */
+export function watchVotesForQuestionDetailed(sessionId, questionIndex, callback) {
+  const q = query(votesCollectionRef(sessionId), where('questionIndex', '==', questionIndex));
+  return onSnapshot(q, (snap) => {
+    const votes = [];
+    snap.forEach((d) => votes.push(d.data()));
+    callback(votes);
+  });
+}
+
+/**
+ * Live-Listener auf ALLE rohen Stimmen der Session (ohne Gruppierung).
+ * Wird von der Rangliste (ranking.html) genutzt, die für jede Frage die
+ * Mehrheitsantwort ermitteln und anschließend jedem Teilnehmer Punkte
+ * zuordnen muss.
+ */
+export function watchAllVotesDetailed(sessionId, callback) {
+  return onSnapshot(votesCollectionRef(sessionId), (snap) => {
+    const votes = [];
+    snap.forEach((d) => votes.push(d.data()));
+    callback(votes);
+  });
+}
+
+/**
  * Live-Listener auf ALLE Stimmen der Session, gruppiert nach Fragen-Index.
  * Wird von der Ergebnis-Übersichtsseite (results.html) genutzt, die alle
  * 16 Fragen gleichzeitig anzeigt. Der Callback erhält ein Objekt der Form

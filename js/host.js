@@ -57,6 +57,9 @@ async function init() {
   const resultsLink = document.getElementById('link-results');
   if (resultsLink) resultsLink.href = `results.html?session=${encodeURIComponent(sessionId)}`;
 
+  const rankingLink = document.getElementById('link-ranking');
+  if (rankingLink) rankingLink.href = `ranking.html?session=${encodeURIComponent(sessionId)}`;
+
   await ensureSessionExists(sessionId);
 
   watchSession(sessionId, onSessionUpdate);

@@ -17,7 +17,8 @@ Build-Prozess. Die App läuft direkt aus statischen Dateien, z. B. auf
 | **Moderator** | `host.html` | Laptop/Tablet des Hochzeitspaares/Trauzeugen | Ablauf steuern (Anmeldung, Fragen, Ergebnisse) |
 | **Teilnehmer** | `login.html` → `vote.html` | Smartphone der Gäste | Anmelden, dann pro Frage abstimmen |
 | **Gesamtergebnis** | `results.html` | beliebig | Alle 16 Fragen mit Bild + horizontalen Ergebnisbalken auf einen Blick |
-| **Startseite** | `index.html` | beliebig | Übersicht/Verteiler zu den vier Ansichten |
+| **Rangliste** | `ranking.html` | beliebig | Teilnehmer-Ranking nach Anzahl "richtig" (Mehrheitsmeinung) getroffener Fragen |
+| **Startseite** | `index.html` | beliebig | Übersicht/Verteiler zu den fünf Ansichten |
 
 Der Ablauf orientiert sich am klassischen "Mr & Mrs"-Hochzeitsspiel: Bei
 jeder der 16 Fragen stimmen die Gäste ab, wer von beiden ("Lara" oder
@@ -40,6 +41,7 @@ dem Display angezeigt.
     login.js             Logik der Anmeldeseite
     vote.js               Logik der Abstimmungsseite
     results.js             Logik der Gesamtergebnis-Übersicht
+    ranking.js              Logik der Teilnehmer-Rangliste
     utils.js              Session-/Teilnehmer-ID-Verwaltung, kleine Helfer
 /assets
     images/                Fragebilder (q01.jpg … q16.jpg), optional
@@ -50,6 +52,7 @@ host.html
 login.html
 vote.html
 results.html
+ranking.html
 index.html
 README.md
 ```

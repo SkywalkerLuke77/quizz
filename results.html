@@ -21,6 +21,28 @@
 
     <div id="results-list" class="results-list"></div>
 
+    <div class="results-footer-link">
+      <a id="link-to-ranking" href="ranking.html" class="btn btn-primary" style="text-decoration:none; display:inline-block;">🏆 Zur Rangliste</a>
+    </div>
+
+    <!-- Namens-Overlay: zeigt bei Klick auf einen Balken, wer wie abgestimmt hat -->
+    <div id="names-overlay" class="names-overlay" hidden>
+      <div class="names-overlay-panel">
+        <button id="names-overlay-close" class="lightbox-close" type="button" aria-label="Schließen">✕</button>
+        <h3 id="names-overlay-title" class="names-overlay-title"></h3>
+        <div class="names-overlay-columns">
+          <div class="names-column names-column--a">
+            <h4 id="names-column-a-title" class="names-column-title"></h4>
+            <ul id="names-list-a" class="names-list"></ul>
+          </div>
+          <div class="names-column names-column--b">
+            <h4 id="names-column-b-title" class="names-column-title"></h4>
+            <ul id="names-list-b" class="names-list"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Bild-Lightbox: wird per JS ein-/ausgeblendet -->
     <div id="lightbox" class="lightbox" hidden>
       <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Bild schließen">✕</button>

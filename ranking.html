@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rangliste – Hochzeitsquiz Lara &amp; Nathanael</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <main class="ranking-page">
+    <header class="results-page-header">
+      <div class="ring-signature">
+        <span class="ring ring--left"></span>
+        <span class="ring ring--right"></span>
+      </div>
+      <div>
+        <h1>Rangliste</h1>
+        <p class="log-line">Session: <strong id="session-label"></strong></p>
+      </div>
+    </header>
+
+    <p class="ranking-explainer">
+      Wer bei einer Frage die Mehrheitsmeinung getroffen hat (mehr als 50 % der Stimmen), bekommt dafür 1 Punkt.
+    </p>
+    <p id="ranking-participant-count" class="ranking-participant-count"></p>
+
+    <p id="ranking-empty" class="ranking-empty" style="display:none;">
+      Noch keine Teilnehmer angemeldet.
+    </p>
+
+    <ol id="ranking-list" class="ranking-list"></ol>
+  </main>
+
+  <script type="module" src="js/ranking.js"></script>
+</body>
+</html>

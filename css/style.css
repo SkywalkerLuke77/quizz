@@ -729,7 +729,6 @@ a {
 .landing-links a.primary { background: linear-gradient(135deg, var(--color-pink-500), var(--color-pink-700)); color: white; }
 .landing-links a.secondary { background: linear-gradient(135deg, var(--color-blue-500), var(--color-blue-700)); color: white; }
 .landing-links a.tertiary { background: var(--color-pink-50); color: var(--color-ink); }
-
 /* =============================================================================
    RESULTS OVERVIEW (results.html) – alle Fragen mit horizontalen Balken
    ============================================================================= */
@@ -751,6 +750,11 @@ a {
   display: flex;
   flex-direction: column;
   gap: 22px;
+}
+
+.results-footer-link {
+  text-align: center;
+  margin-top: 34px;
 }
 
 .question-block {
@@ -952,6 +956,221 @@ a {
 
 @media (max-width: 640px) {
   .lightbox-close { top: 16px; right: 16px; }
+}
+
+/* --- Namens-Overlay (Teilnehmer je Antwort) --- */
+.hbar-row.is-clickable {
+  cursor: pointer;
+  border-radius: 999px;
+  transition: transform 0.12s var(--ease-out);
+}
+.hbar-row.is-clickable:hover {
+  transform: scale(1.015);
+}
+.hbar-row.is-clickable:active {
+  transform: scale(0.99);
+}
+
+.names-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(55, 47, 62, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: lightbox-fade-in 0.2s var(--ease-out);
+}
+.names-overlay[hidden] { display: none; }
+
+.names-overlay-panel {
+  position: relative;
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-strong);
+  padding: 32px 30px 28px;
+  max-width: 640px;
+  width: 100%;
+  max-height: 82vh;
+  display: flex;
+  flex-direction: column;
+}
+.names-overlay-title {
+  font-size: 1.3rem;
+  line-height: 1.35;
+  padding-right: 44px;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.names-overlay-columns {
+  display: flex;
+  gap: 16px;
+  min-height: 0;
+  flex: 1;
+}
+.names-column {
+  flex: 1;
+  min-width: 0;
+  border-radius: var(--radius-md);
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.names-column--a { background: var(--color-pink-50); }
+.names-column--b { background: var(--color-blue-50); }
+
+.names-column-title {
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+.names-column--a .names-column-title { color: var(--color-pink-700); }
+.names-column--b .names-column-title { color: var(--color-blue-700); }
+
+.names-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.names-list li {
+  background: white;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(55, 47, 62, 0.06);
+}
+.names-list li.names-empty {
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-ink-soft);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 560px) {
+  .names-overlay-columns { gap: 10px; }
+  .names-column { padding: 12px 10px; }
+  .names-overlay-panel { padding: 26px 20px 22px; }
+}
+
+/* =============================================================================
+   RANKING (ranking.html) – Rangliste der Teilnehmer
+   ============================================================================= */
+.ranking-page {
+  min-height: 100vh;
+  padding: 32px 24px 80px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.ranking-explainer {
+  color: var(--color-ink-soft);
+  font-size: 0.98rem;
+  margin-bottom: 4px;
+  max-width: 520px;
+}
+.ranking-participant-count {
+  color: var(--color-ink-soft);
+  font-size: 0.85rem;
+  margin-bottom: 24px;
+}
+.ranking-empty {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 24px;
+  text-align: center;
+  color: var(--color-ink-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.ranking-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ranking-row {
+  display: grid;
+  grid-template-columns: 44px 1fr 120px 76px;
+  align-items: center;
+  gap: 14px;
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  box-shadow: var(--shadow-soft);
+}
+
+.ranking-rank {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-ink-soft);
+  text-align: center;
+}
+
+.ranking-name {
+  font-weight: 600;
+  font-size: 1.02rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ranking-bar-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-pink-50);
+  overflow: hidden;
+  display: block;
+}
+.ranking-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--color-pink-500), var(--color-blue-500));
+  transition: width 0.8s var(--ease-out);
+}
+
+.ranking-score {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-align: right;
+  font-size: 1rem;
+  color: var(--color-ink-soft);
+}
+
+.ranking-row--top1 {
+  background: linear-gradient(135deg, #fff8ec, #fff);
+  box-shadow: 0 12px 34px rgba(201, 162, 93, 0.28);
+  border: 1.5px solid var(--color-gold);
+}
+.ranking-row--top1 .ranking-rank { font-size: 1.6rem; color: var(--color-gold); }
+.ranking-row--top1 .ranking-score { color: var(--color-gold); }
+
+.ranking-row--top2 .ranking-rank,
+.ranking-row--top3 .ranking-rank {
+  font-size: 1.5rem;
+}
+
+@media (max-width: 560px) {
+  .ranking-row {
+    grid-template-columns: 36px 1fr 68px;
+  }
+  .ranking-bar-track { display: none; }
 }
 
 /* =============================================================================
