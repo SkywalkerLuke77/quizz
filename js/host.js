@@ -27,7 +27,6 @@ const sessionId = getSessionId();
 const el = {
   sessionLabel: document.getElementById('session-label'),
   statusPill: document.getElementById('status-pill'),
-  voteCard: document.getElementById('voteCard'),
   participantCount: document.getElementById('participant-count-value'),
   voteCount: document.getElementById('vote-count-value'),
   questionPreview: document.getElementById('question-preview'),
@@ -54,6 +53,9 @@ init();
 
 async function init() {
   el.sessionLabel.textContent = sessionId;
+
+  const resultsLink = document.getElementById('link-results');
+  if (resultsLink) resultsLink.href = `results.html?session=${encodeURIComponent(sessionId)}`;
 
   await ensureSessionExists(sessionId);
 
@@ -88,11 +90,6 @@ function updateVotesWatch(index) {
   if (votesUnsubscribe) votesUnsubscribe();
   votesUnsubscribe = watchVotesForQuestion(sessionId, index, ({ total }) => {
     el.voteCount.textContent = total;
-    if (total === parseInt(el.participantCount.textContent, 10) && total > 0) {
-      el.voteCard.classList.add('votes-complete');
-    } else {
-      el.voteCard.classList.remove('votes-complete');
-    }
   });
 }
 

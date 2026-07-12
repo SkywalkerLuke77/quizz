@@ -225,6 +225,27 @@ export function watchVotesForQuestion(sessionId, questionIndex, callback) {
   });
 }
 
+/**
+ * Live-Listener auf ALLE Stimmen der Session, gruppiert nach Fragen-Index.
+ * Wird von der Ergebnis-Übersichtsseite (results.html) genutzt, die alle
+ * 16 Fragen gleichzeitig anzeigt. Der Callback erhält ein Objekt der Form
+ * { [questionIndex]: { countA, countB, total } }.
+ */
+export function watchAllVotes(sessionId, callback) {
+  return onSnapshot(votesCollectionRef(sessionId), (snap) => {
+    const byQuestion = {};
+    snap.forEach((d) => {
+      const data = d.data();
+      const idx = data.questionIndex;
+      if (!byQuestion[idx]) byQuestion[idx] = { countA: 0, countB: 0, total: 0 };
+      if (data.answer === 'A') byQuestion[idx].countA += 1;
+      else if (data.answer === 'B') byQuestion[idx].countB += 1;
+      byQuestion[idx].total += 1;
+    });
+    callback(byQuestion);
+  });
+}
+
 export async function deleteAllVotes(sessionId) {
   const snap = await getDocs(votesCollectionRef(sessionId));
   await batchDelete(snap.docs.map((d) => d.ref));
