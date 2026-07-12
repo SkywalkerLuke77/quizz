@@ -855,6 +855,105 @@ a {
   .hbar-label { width: 76px; font-size: 0.85rem; }
 }
 
+/* --- Bild-Lightbox --- */
+.question-block-image {
+  cursor: zoom-in;
+}
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(55, 47, 62, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: lightbox-fade-in 0.2s var(--ease-out);
+}
+.lightbox[hidden] { display: none; }
+@keyframes lightbox-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.lightbox-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  max-width: 90vw;
+}
+.lightbox-image {
+  max-width: 70vw;
+  max-height: 70vh;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-strong);
+  object-fit: contain;
+  background: white;
+}
+.lightbox-placeholder {
+  width: 70vw;
+  max-width: 640px;
+  height: 40vh;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-strong);
+  background: linear-gradient(135deg, var(--color-pink-200), var(--color-blue-200));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: white;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+}
+.lightbox-placeholder[hidden] { display: none; }
+.lightbox-nav {
+  display: flex;
+  gap: 18px;
+}
+.lightbox-nav-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: white;
+  color: var(--color-ink);
+  font-size: 1.4rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.15s var(--ease-out), background 0.15s;
+}
+.lightbox-nav-btn:hover { background: var(--color-pink-200); }
+.lightbox-nav-btn:active { transform: scale(0.94); }
+.lightbox-close {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: white;
+  color: var(--color-ink);
+  font-size: 1.3rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.15s var(--ease-out), background 0.15s;
+}
+.lightbox-close:hover {
+  background: var(--color-pink-200);
+}
+.lightbox-close:active {
+  transform: scale(0.94);
+}
+
+@media (max-width: 640px) {
+  .lightbox-close { top: 16px; right: 16px; }
+}
+
 /* =============================================================================
    Responsive
    ============================================================================= */

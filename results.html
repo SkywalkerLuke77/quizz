@@ -20,6 +20,25 @@
     </header>
 
     <div id="results-list" class="results-list"></div>
+
+    <!-- Bild-Lightbox: wird per JS ein-/ausgeblendet -->
+    <div id="lightbox" class="lightbox" hidden>
+      <button id="lightbox-close" class="lightbox-close" type="button" aria-label="Bild schließen">✕</button>
+      <div class="lightbox-content">
+        <img id="lightbox-image" class="lightbox-image" src="" alt="" />
+        <div id="lightbox-placeholder" class="lightbox-placeholder" hidden>
+          <div class="ring-signature">
+            <span class="ring ring--left"></span>
+            <span class="ring ring--right"></span>
+          </div>
+          <p>Kein Bild vorhanden</p>
+        </div>
+        <div class="lightbox-nav">
+          <button id="lightbox-prev" class="lightbox-nav-btn" type="button" aria-label="Vorheriges Bild">←</button>
+          <button id="lightbox-next" class="lightbox-nav-btn" type="button" aria-label="Nächstes Bild">→</button>
+        </div>
+      </div>
+    </div>
   </main>
 
   <script type="module" src="js/results.js"></script>

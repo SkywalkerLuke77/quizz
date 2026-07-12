@@ -15,6 +15,14 @@ import { getSessionId, formatPercent } from './utils.js';
 const sessionId = getSessionId();
 const listEl = document.getElementById('results-list');
 const sessionLabelEl = document.getElementById('session-label');
+const lightbox = document.getElementById('lightbox');
+const lightboxImage = document.getElementById('lightbox-image');
+const lightboxPlaceholder = document.getElementById('lightbox-placeholder');
+const lightboxClose = document.getElementById('lightbox-close');
+const lightboxPrev = document.getElementById('lightbox-prev');
+const lightboxNext = document.getElementById('lightbox-next');
+
+let lightboxIndex = 0;
 
 init();
 
@@ -22,8 +30,66 @@ async function init() {
   if (sessionLabelEl) sessionLabelEl.textContent = sessionId;
 
   buildSkeleton();
+  bindLightbox();
   await ensureSessionExists(sessionId);
   watchAllVotes(sessionId, onVotesUpdate);
+}
+
+/* --------------------------------- Lightbox --------------------------------- */
+
+function bindLightbox() {
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightboxPrev.addEventListener('click', () => stepLightbox(-1));
+  lightboxNext.addEventListener('click', () => stepLightbox(1));
+
+  // Klick auf den dunklen Hintergrund (nicht auf Bild/Buttons) schließt ebenfalls.
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (lightbox.hidden) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') stepLightbox(-1);
+    if (e.key === 'ArrowRight') stepLightbox(1);
+  });
+}
+
+function openLightbox(index) {
+  lightboxIndex = index;
+  renderLightboxImage();
+  lightbox.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  lightbox.hidden = true;
+  lightboxImage.src = '';
+  document.body.style.overflow = '';
+}
+
+/** Wechselt zum vorherigen (-1) oder nächsten (+1) Bild - läuft am Ende/Anfang zyklisch um. */
+function stepLightbox(delta) {
+  lightboxIndex = (lightboxIndex + delta + questions.length) % questions.length;
+  renderLightboxImage();
+}
+
+function renderLightboxImage() {
+  const q = questions[lightboxIndex];
+  lightboxImage.hidden = false;
+  lightboxPlaceholder.hidden = true;
+
+  if (!q || !q.bild) {
+    lightboxImage.hidden = true;
+    lightboxPlaceholder.hidden = false;
+    return;
+  }
+
+  lightboxImage.onerror = () => {
+    lightboxImage.hidden = true;
+    lightboxPlaceholder.hidden = false;
+  };
+  lightboxImage.src = q.bild;
 }
 
 /** Erzeugt für jede Frage einmalig den HTML-Block (Bild + leere Balken). */
@@ -67,6 +133,8 @@ function buildBarRowHtml(key, label) {
 function renderImage(index, src) {
   const wrap = document.getElementById(`image-${index}`);
   if (!wrap) return;
+
+  wrap.addEventListener('click', () => openLightbox(index));
 
   if (!src) {
     wrap.appendChild(buildPlaceholder());
