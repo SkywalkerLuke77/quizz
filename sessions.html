@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sessions – Hochzeitsquiz</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <main class="sessions-page">
+    <header class="results-page-header">
+      <div class="ring-signature">
+        <span class="ring ring--left"></span>
+        <span class="ring ring--right"></span>
+      </div>
+      <div>
+        <h1>Sessions</h1>
+        <p class="log-line">Alle Hochzeiten &amp; Testläufe in diesem Firebase-Projekt</p>
+      </div>
+    </header>
+
+    <section class="host-section">
+      <h3>Neue Session anlegen</h3>
+      <form id="create-session-form" class="create-session-form">
+        <input
+          type="text"
+          id="new-session-name"
+          placeholder="z. B. Hochzeit 2027 oder Testlauf"
+          maxlength="60"
+          required
+        />
+        <button id="create-session-btn" class="btn btn-primary" type="submit">Session anlegen</button>
+      </form>
+      <p id="create-session-message" class="form-message" role="status" aria-live="polite"></p>
+    </section>
+
+    <h3 class="sessions-list-heading">Vorhandene Sessions</h3>
+    <p id="sessions-loading" class="log-line">Lade Sessions …</p>
+    <p id="sessions-empty" class="ranking-empty" style="display:none;">
+      Noch keine Session vorhanden. Lege oben deine erste an.
+    </p>
+    <div id="sessions-list" class="sessions-list"></div>
+  </main>
+
+  <script type="module" src="js/sessions.js"></script>
+</body>
+</html>

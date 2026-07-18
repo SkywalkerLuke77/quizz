@@ -52,6 +52,33 @@ import {
   writeBatch,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
+/**
+ * Listet alle vorhandenen Sessions auf (neueste zuerst), inkl. Teilnehmerzahl.
+ * Wird von der Sessions-Übersichtsseite (sessions.html) genutzt, damit man
+ * mehrere parallele Hochzeiten/Testläufe im selben Firebase-Projekt wieder-
+ * findet, ohne sich die jeweilige Session-ID separat merken zu müssen.
+ * Dies ist eine einmalige Abfrage (kein Live-Listener), da sich die Liste
+ * der Sessions selbst selten ändert - beim erneuten Laden der Seite ist der
+ * Stand ausreichend aktuell.
+ */
+export async function listSessions() {
+  const q = query(collection(db, 'sessions'), orderBy('createdAt', 'desc'));
+  const snap = await getDocs(q);
+
+  const sessions = [];
+  for (const d of snap.docs) {
+    let participantCount = 0;
+    try {
+      const pSnap = await getDocs(collection(db, 'sessions', d.id, 'participants'));
+      participantCount = pSnap.size;
+    } catch {
+      participantCount = 0;
+    }
+    sessions.push({ id: d.id, ...d.data(), participantCount });
+  }
+  return sessions;
+}
+
 /* --------------------------------- Session -------------------------------- */
 
 function sessionDocRef(sessionId) {

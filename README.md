@@ -18,7 +18,8 @@ Build-Prozess. Die App läuft direkt aus statischen Dateien, z. B. auf
 | **Teilnehmer** | `login.html` → `vote.html` | Smartphone der Gäste | Anmelden, dann pro Frage abstimmen |
 | **Gesamtergebnis** | `results.html` | beliebig | Alle 16 Fragen mit Bild + horizontalen Ergebnisbalken auf einen Blick |
 | **Rangliste** | `ranking.html` | beliebig | Teilnehmer-Ranking nach Anzahl "richtig" (Mehrheitsmeinung) getroffener Fragen |
-| **Startseite** | `index.html` | beliebig | Übersicht/Verteiler zu den fünf Ansichten |
+| **Sessions** | `sessions.html` | beliebig | Übersicht aller vorhandenen Sessions + neue Session anlegen, ohne alte Daten zu verlieren |
+| **Startseite** | `index.html` | beliebig | Übersicht/Verteiler zu den sechs Ansichten |
 
 Der Ablauf orientiert sich am klassischen "Mr & Mrs"-Hochzeitsspiel: Bei
 jeder der 16 Fragen stimmen die Gäste ab, wer von beiden ("Lara" oder
@@ -42,6 +43,7 @@ dem Display angezeigt.
     vote.js               Logik der Abstimmungsseite
     results.js             Logik der Gesamtergebnis-Übersicht
     ranking.js              Logik der Teilnehmer-Rangliste
+    sessions.js              Logik der Sessions-Übersicht (mehrere Hochzeiten/Testläufe)
     utils.js              Session-/Teilnehmer-ID-Verwaltung, kleine Helfer
 /assets
     images/                Fragebilder (q01.jpg … q16.jpg), optional
@@ -53,6 +55,7 @@ login.html
 vote.html
 results.html
 ranking.html
+sessions.html
 index.html
 README.md
 ```
@@ -179,10 +182,13 @@ sessions/{sessionId}/votes/{questionIndex_participantId}
    Pro, und lass den QR-Code auf dem Display auf `.../login.html` zeigen
    (das passiert automatisch, keine Konfiguration nötig).
 
-> **Hinweis zu mehreren Hochzeiten/Testläufen:** Hänge einfach
-> `?session=meinetestsession` an alle drei URLs an, um eine komplett
-> unabhängige Session zu verwenden (z. B. für einen Probelauf vor der
-> echten Hochzeit).
+> **Hinweis zu mehreren Hochzeiten/Testläufen:** Öffne `sessions.html` – dort
+> kannst du eine neue Session anlegen (z. B. für einen Probelauf vor der
+> echten Hochzeit) und siehst alle bereits vorhandenen Sessions mit direkten
+> Links zu allen Ansichten. Alternativ genügt es auch, `?session=name`
+> manuell an die URLs anzuhängen. Bereits bestehende Sessions bleiben dabei
+> immer unangetastet – neue Session anlegen löscht oder überschreibt nie
+> eine alte.
 
 ---
 
@@ -255,10 +261,10 @@ automatisch mit `localhost:8080` statt der Cloud.
   dem Display eingeblendet werden.
 - **Foto-Upload durch Gäste**: Firebase Storage anbinden, damit Gäste eigene
   Fotos zu den Antwortoptionen hochladen können.
-- **Mehrere parallele Spiele**: Die App unterstützt bereits mehrere
-  Sessions parallel (`?session=...`) – eine Session-Auswahl-Seite für den
-  Moderator wäre eine sinnvolle Ergänzung, falls mehrere Hochzeiten dasselbe
-  Firebase-Projekt teilen.
+- **Zugriffsschutz für sessions.html**: Die Sessions-Übersicht listet aktuell
+  alle Session-Namen offen auf (siehe Abschnitt 4, Firestore-Regeln sind
+  bewusst offen gehalten). Für einen geschützteren Einsatz ließe sich hier
+  z. B. ein einfaches Passwort oder Firebase App Check ergänzen.
 - **Statistik-Export**: Nach dem Event alle `votes`-Dokumente per Cloud
   Function als CSV exportieren, um die Ergebnisse als Erinnerung zu
   archivieren.

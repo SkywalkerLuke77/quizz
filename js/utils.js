@@ -134,6 +134,27 @@ export function clearVotedLocally(sessionId) {
   localStorage.removeItem('hq_votedQuestions_' + sessionId);
 }
 
+/**
+ * Wandelt einen frei eingegebenen Session-Namen in eine sichere, als
+ * Firestore-Dokument-ID nutzbare Form um (nur Kleinbuchstaben, Ziffern und
+ * Bindestriche). Wird beim Anlegen einer neuen Session auf sessions.html
+ * verwendet, z. B. "Hochzeit 2027!" -> "hochzeit-2027".
+ */
+export function slugify(str) {
+  return str
+    .trim()
+    .toLowerCase()
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // übrige Akzente entfernen (é -> e, ...)
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 60);
+}
+
 /** Rundet einen Prozentwert kaufmännisch und formatiert ihn als String. */
 export function formatPercent(count, total) {
   if (!total) return '0%';
